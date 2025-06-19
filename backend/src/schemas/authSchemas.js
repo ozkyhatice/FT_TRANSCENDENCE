@@ -108,4 +108,17 @@ const registerSchema = {
       }
     }
   }
-export { loginSchema, getMeSchema, postMeSchema, registerSchema };
+
+const putMeSchema = {
+  summary: 'Update current user info',
+  tags: ['Auth'],
+  security: [{ bearerAuth: [] }],
+  body: {
+    type: 'object',
+    properties: {
+      username: { type: 'string' },
+      password: { type: 'string' }
+    }
+  }
+}
+export { loginSchema, getMeSchema, postMeSchema, registerSchema, putMeSchema };

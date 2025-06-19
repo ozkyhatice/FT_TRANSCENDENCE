@@ -47,7 +47,7 @@ export async function updateMeController(request, reply) {
     const { userId } = request.user;
     const { username, password } = request.body;
 
-    if (!username?.trim() && !password?.trim()) {
+    if (!username && !password) {
       return reply.code(400).send({ 
         error: 'At least one field (username or password) is required for update' 
       });
@@ -82,5 +82,19 @@ export async function updateMeController(request, reply) {
       return reply.code(404).send({ error: 'User not found' });
     }
     return reply.code(500).send({ error: 'Failed to update user' });
+  }
+}
+
+export async function logoutController(request, reply) {
+  try {
+    const { userId } = request.user;
+    const user = await authService.getUserByIdService(userId);
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+    return reply.code(200).send({ message: 'User logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    return reply.code(500).send({ error: 'Internal server error while logging out' });
   }
 }

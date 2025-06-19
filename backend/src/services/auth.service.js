@@ -75,8 +75,8 @@ export async function updateUserService(id, { username, password }) {
         where: { id },
         data: dataToUpdate,
         select: {
+            id: true,
             username: true,
-            updatedAt: true
         }
     });
 

@@ -1,6 +1,6 @@
 import * as controller from '../controllers/auth.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
-import { loginSchema, registerSchema, getMeSchema, postMeSchema } from '../schemas/authSchemas.js';
+import { loginSchema, registerSchema, getMeSchema, postMeSchema, putMeSchema } from '../schemas/authSchemas.js';
 
 const preValidationHook = (request, reply, done) => {
   const { username, password } = request.body;
@@ -39,5 +39,11 @@ export default async function authRoutes(app, options) {
     preValidation: preValidationHook,
     handler: controller.updateMeController
   });
+  app.put('/me', {
+    preHandler: verifyJWT,
+    schema: putMeSchema,
+    preValidation: preValidationHook,
+    handler: controller.updateMeController
+  })
 
 }
