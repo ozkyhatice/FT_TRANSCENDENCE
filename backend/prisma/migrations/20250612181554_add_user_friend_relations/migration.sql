@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "Friend" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "requesterId" INTEGER NOT NULL,
+    "receiverId" INTEGER NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Friend_requesterId_fkey" FOREIGN KEY ("requesterId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Friend_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

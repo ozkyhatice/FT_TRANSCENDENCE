@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends – Pong Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <header class="bg-indigo-600 text-white py-4">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">Friends</h1>
+      <div>
+        <button id="logoutBtn" class="text-sm hover:underline">Logout</button>
+        <button id="profileBtn" class="text-sm hover:underline">Profile</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Add Friend</h2>
+      <form id="addFriendForm" class="flex space-x-4">
+        <input id="targetId" type="text" placeholder="Username or User ID" required class="flex-grow border rounded px-3 py-2" />
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">Send Request</button>
+      </form>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Your Friends</h2>
+      <ul id="friendsList" class="space-y-2"></ul>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">Pending Requests</h2>
+      <ul id="pendingList" class="space-y-2"></ul>
+    </section>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-4 text-center">
+    &copy; 2024 Pong Game API Demo
+  </footer>
+
+  <script src="/js/friends.js"></script>
+</body>
+</html> 

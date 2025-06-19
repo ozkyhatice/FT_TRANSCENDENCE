@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile – Pong Game</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+  <header class="bg-indigo-600 text-white py-4">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold">Profile</h1>
+      <div class="space-x-4">
+        <a href="/friends.html" class="text-sm hover:underline">Friends</a>
+        <button id="logoutBtn" class="text-sm hover:underline">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-12">
+    <div class="max-w-xl mx-auto bg-white shadow-md rounded px-8 py-6 space-y-6">
+      <!-- Basic Info -->
+      <div class="flex items-center space-x-6">
+        <img id="avatar" src="https://ui-avatars.com/api/?name=User" alt="avatar" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h2 id="displayUsername" class="text-2xl font-bold mb-1">Username</h2>
+          <p class="text-gray-600"><span id="wins">0</span> Wins • <span id="losses">0</span> Losses</p>
+        </div>
+      </div>
+
+      <!-- Update Form (own profile) -->
+      <form id="profileForm" class="space-y-4 hidden">
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
+          <input id="username" name="username" type="text" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="password">New Password (optional)</label>
+          <input id="password" name="password" type="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Save Changes</button>
+      </form>
+
+      <!-- Other user actions -->
+      <div id="otherActions" class="hidden">
+        <button id="addFriendBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Add Friend</button>
+      </div>
+
+      <!-- Friends list -->
+      <div>
+        <h3 class="text-xl font-semibold mb-4">Friends</h3>
+        <div id="friendsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-4 text-center">
+    &copy; 2024 Pong Game API Demo
+  </footer>
+
+  <script src="/js/profile.js"></script>
+</body>
+</html> 

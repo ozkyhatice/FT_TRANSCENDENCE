@@ -1,0 +1,59 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment
+.env
+.env.*.local
+*.local
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+log.txt
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+.prisma/
+*.sqlite
+
+# Fastify autoload
+build/
+
+# VSCode settings
+.vscode/
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+docker-compose.prod.yml
+.env.docker
+
+# Testing
+coverage/
+*.lcov
+jest-output/
+test-results/
+
+# Cache
+.cache/
+dist/
+tmp/
+*.tmp
+*.swp
+
+# Typescript
+*.tsbuildinfo
+
+# Misc
+*.bak
+*.old
