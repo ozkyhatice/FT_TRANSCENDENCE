@@ -21,6 +21,15 @@ if (form) {
       }
       localStorage.setItem('token', data.token);
       window.location.href = '/friends.html';
+      const token = localStorage.getItem("token");
+
+      const socket = new WebSocket("ws://localhost:3000/ws", [token]);
+      socket.onopen = () => {
+        console.log("Connected to WebSocket");
+      }
+      socket.onmessage = (event) => {
+        console.log("Received message:", event.data);
+      }
     } catch (err) {
       alert('Network error');
       console.error(err);

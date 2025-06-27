@@ -21,6 +21,10 @@ model User {
 
   sentFriendRequests     Friend[] @relation("Requesters")
   receivedFriendRequests Friend[] @relation("Receivers")
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+
 }
 
 model Friend {
@@ -33,3 +37,18 @@ model Friend {
   requester   User      @relation("Requesters", fields: [requesterId], references: [id])
   receiver    User      @relation("Receivers", fields: [receiverId], references: [id])
 }
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  senderId   Int
+
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  receiverId Int
+
+  content    String
+  createdAt  DateTime @default(now())
+
+  isRead     Boolean  @default(false)
+}
+

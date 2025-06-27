@@ -7,12 +7,16 @@ import { fileURLToPath } from 'url';
 
 import authRoutes from './routes/auth.routes.js';
 import friendsRoutes from './routes/friends.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 import errorHandler from './handlers/errorHandler.js';
+import websocket from '@fastify/websocket';
+import chatSocket from './sockets/client/chat.socket.js';
 
 dotenv.config();
 
 const app = fastify({ logger: true });
 
+app.register(websocket);
 app.register(jwt, { secret: process.env.JWT_SECRET || 'supersecret' });
 
 await app.register(import('@fastify/swagger'), {
@@ -49,8 +53,13 @@ app.register(fastifyStatic, {
 
 app.setErrorHandler(errorHandler);
 
+// Register chat socket handler
+
 app.register(authRoutes);
 app.register(friendsRoutes);
+
+app.register(chatSocket);
+app.register(chatRoutes);
 
 app.listen({ port: process.env.PORT || 3000 }, (err, address) => {
 	if (err) {

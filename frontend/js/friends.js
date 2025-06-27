@@ -26,8 +26,13 @@ async function loadFriends() {
     friendsListEl.innerHTML = '';
     friendsList.forEach(f => {
       const li = document.createElement('li');
-      li.className = 'bg-white p-3 rounded shadow';
-      li.innerHTML = `<a href="/profile.html?user=${encodeURIComponent(f.username)}" class="hover:underline font-semibold">${f.username}</a>`;
+      li.className = 'bg-white p-3 rounded shadow flex justify-between items-center';
+      li.innerHTML = `
+        <span class="font-semibold">${f.username}</span>
+        <div class="space-x-3 text-sm">
+          <a href="/profile.html?user=${encodeURIComponent(f.username)}" class="text-indigo-600 hover:underline">Profile</a>
+          <a href="/message.html?receiver=${encodeURIComponent(f.id)}" class="text-green-600 hover:underline">Chat</a>
+        </div>`;
       friendsListEl.appendChild(li);
     });
   } catch (err) {
