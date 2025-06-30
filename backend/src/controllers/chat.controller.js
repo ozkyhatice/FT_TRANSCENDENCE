@@ -14,14 +14,14 @@ export async function sendMessageController(request, reply) {
         if (content.length > 1000 || content.length < 1) {
             return reply.code(400).send({error: 'Message content must be less than 1000 characters and greater than 1 character'});
         }
+        try{
         const message = await chatService.sendMessageService(senderID, receiverId, content);
         return reply.code(201).send({message});
-
-
+        }catch(error){
+            return reply.code(400).send({error: error.message});
+        }
     }catch(error){
-        console.error('Error sending message:', error);
-        return reply.code(500).send({error: 'Failed to send message'});
-
+        return reply.code(400).send({error: error.message});
     }
 
 }

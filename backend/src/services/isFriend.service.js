@@ -1,14 +1,13 @@
 import prisma from '../db/client.js';
 
-export async function isFriendService(userId, friendId) {
+export async function isFriendService(requesterId, receiverId) {
     const friend = await prisma.friend.findFirst({
         where: {            
             OR: [
-                { userId, friendId },
-                { userId: friendId, friendId: userId }
+                { requesterId: requesterId,  receiverId: receiverId },
+                { requesterId: receiverId, receiverId: requesterId }
             ]
         }
     });
-
     return friend;
 }

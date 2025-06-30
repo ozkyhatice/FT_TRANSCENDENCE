@@ -2,6 +2,7 @@ import { PrismaClientUnknownRequestError } from '@prisma/client/runtime/library'
 import prisma from '../db/client.js';
 
 export async function createFriendRequestController(request, reply) {
+  try{
   const requesterId = request.user.userId;
   const targetParam = request.params.targetId;
   let targetId = parseInt(targetParam, 10);
@@ -40,6 +41,9 @@ export async function createFriendRequestController(request, reply) {
   });
 
   return reply.code(201).send({ message: "Friend request sent", friendRequest });
+  } catch (error) {
+    return reply.code(400).send({ error: error.message });
+  }
 }
 
 

@@ -1,11 +1,12 @@
-import prisma from '../../db/client.js';
-import { isFriendService } from '../../services/isFriend.service.js';
-import { sendMessageService } from '../../services/chat.service.js';
+import prisma from '../db/client.js';
+import { isFriendService } from '../services/isFriend.service.js';
+import { sendMessageService } from '../services/chat.service.js';
+import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const clients = new Map(); // userId → socket
 
 export default async function chatSocket(fastify) {
-  console.log('\n\nchatSocket registered\n\n');
+  fastify.addHook('preHandler', verifyJWT);
   fastify.get('/ws', { websocket: true }, async (connection, req) => {
     try {
       const token = req.headers['sec-websocket-protocol'];      
@@ -58,6 +59,7 @@ export default async function chatSocket(fastify) {
         try {
           const { receiverId, content } = JSON.parse(messageRaw.toString());
           const friend = await isFriendService(parseInt(userId), parseInt(receiverId));
+          console.log('\n\nfriend', friend, '\n\n');
           if (!friend) {
             console.error('User is not a friend');
             return;

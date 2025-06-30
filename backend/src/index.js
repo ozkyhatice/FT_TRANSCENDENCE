@@ -10,7 +10,7 @@ import friendsRoutes from './routes/friends.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import errorHandler from './handlers/errorHandler.js';
 import websocket from '@fastify/websocket';
-import chatSocket from './sockets/client/chat.socket.js';
+import chatSocket from './sockets/chat.socket.js';
 
 dotenv.config();
 
