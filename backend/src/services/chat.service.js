@@ -1,6 +1,7 @@
 import prisma from '../db/client.js';
 import { isFriendService } from './isFriend.service.js';
 
+
 export async function getMessagesService(senderID, receiverId) {
     const messages = await prisma.message.findMany({
         where: {
@@ -37,4 +38,19 @@ export async function sendMessageService(senderID, receiverId, content) {
         }
     });
     return message;
+}
+
+export async function getChatHistoryService(senderID, receiverId) {
+    const chatHistory = await prisma.message.findMany({
+        where: {
+            OR: [
+                { senderId: parseInt(senderID), receiverId: parseInt(receiverId) },
+                { senderId: parseInt(receiverId), receiverId: parseInt(senderID) }
+            ]
+        },
+        orderBy: {
+            createdAt: 'asc'
+        }
+    });
+    return chatHistory;
 }
