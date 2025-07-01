@@ -4,7 +4,7 @@ import jwt from '@fastify/jwt';
 import fastifyStatic from '@fastify/static';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import { Server } from 'socket.io';
 import authRoutes from './routes/auth.routes.js';
 import friendsRoutes from './routes/friends.routes.js';
 import chatRoutes from './routes/chat.routes.js';
@@ -15,6 +15,11 @@ import chatSocket from './sockets/chat.socket.js';
 dotenv.config();
 
 const app = fastify({ logger: true });
+const io = new Server(app.server);
+io.on('connection', (socket) => {
+  console.log('a user connected');
+});
+
 
 app.register(websocket);
 app.register(jwt, { secret: process.env.JWT_SECRET || 'supersecret' });
@@ -48,7 +53,7 @@ const __dirname = path.dirname(__filename);
 
 app.register(fastifyStatic, {
   root: path.join(__dirname, '../../frontend'),
-  prefix: '/', // Serves UI at http://localhost:3000
+  prefix: '/',
 });
 
 app.setErrorHandler(errorHandler);
@@ -69,3 +74,4 @@ app.listen({ port: process.env.PORT || 3000 }, (err, address) => {
 	app.log.info(`Server listening at ${address}`);
 });
 
+export { io };
