@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtime Chat Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Header -->
+  <header class="bg-indigo-600 text-white py-4 shadow-lg">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+        <h1 class="text-xl font-bold">Realtime Chat Test</h1>
+        <span id="connectionStatus" class="text-sm text-green-200">Connecting...</span>
+      </div>
+      <div class="space-x-4">
+        <a href="/friends.html" class="text-sm hover:underline">Friends</a>
+        <a href="/profile.html" class="text-sm hover:underline">Profile</a>
+        <button id="logoutBtn" class="text-sm hover:underline">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Chat Interface -->
+  <div class="container mx-auto px-4 py-6 h-screen flex flex-col">
+    <!-- Friend Selection -->
+    <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+      <div class="flex items-center space-x-4">
+        <label class="text-sm font-medium text-gray-700">Chat with:</label>
+        <select id="friendSelect" class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="">Select a friend...</option>
+        </select>
+        <div id="friendStatus" class="flex items-center space-x-2">
+          <div id="friendStatusDot" class="w-2 h-2 bg-gray-400 rounded-full"></div>
+          <span id="friendStatusText" class="text-sm text-gray-500">Offline</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="flex-1 bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+      <!-- Chat Header -->
+      <div id="chatHeader" class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 id="chatWithName" class="font-semibold text-gray-800">Select a friend to start chatting</h3>
+            <p id="chatStatus" class="text-sm text-gray-500">No active chat</p>
+          </div>
+          <button id="clearChatBtn" class="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors">
+            Clear Chat
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Area -->
+      <div id="messagesContainer" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+        <div class="text-center text-gray-500 py-8">
+          <div class="text-4xl mb-2">💬</div>
+          <p>Start a conversation by selecting a friend and typing a message!</p>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="border-t border-gray-200 p-4 bg-white">
+        <div class="flex space-x-4">
+          <input 
+            type="text" 
+            id="messageInput" 
+            placeholder="Type your message..." 
+            disabled
+            class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+          <button 
+            id="sendBtn" 
+            disabled
+            class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            Send
+          </button>
+        </div>
+        <div class="mt-2 text-xs text-gray-500">
+          Press Enter to send • 
+          <span id="messageCounter">0</span> messages sent • 
+          <span id="wsStatus" class="text-red-500">Disconnected</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Debug Info -->
+    <div class="mt-4 bg-gray-800 text-white rounded-lg p-4 text-sm">
+      <div class="flex justify-between items-center mb-2">
+        <h4 class="font-semibold">Debug Info</h4>
+        <button id="toggleDebug" class="text-xs bg-gray-600 px-2 py-1 rounded">Hide</button>
+      </div>
+      <div id="debugInfo">
+        <div class="grid grid-cols-2 gap-4 text-xs">
+          <div>
+            <span class="text-gray-400">WebSocket:</span> <span id="debugWs">Disconnected</span>
+          </div>
+          <div>
+            <span class="text-gray-400">User ID:</span> <span id="debugUserId">-</span>
+          </div>
+          <div>
+            <span class="text-gray-400">Selected Friend:</span> <span id="debugFriend">None</span>
+          </div>
+          <div>
+            <span class="text-gray-400">Messages Sent:</span> <span id="debugSent">0</span>
+          </div>
+        </div>
+        <div class="mt-2 max-h-20 overflow-y-auto">
+          <div class="text-gray-400 text-xs">Last Events:</div>
+          <div id="debugEvents" class="text-xs font-mono"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/chat-test.js"></script>
+</body>
+</html> 
