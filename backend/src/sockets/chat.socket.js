@@ -1,18 +1,16 @@
 import prisma from '../db/client.js';
 import { isFriendService } from '../services/isFriend.service.js';
 import { sendMessageService } from '../services/chat.service.js';
-import { verifyJWT } from '../middlewares/auth.middleware.js';
-
-const clients = new Map(); // userId → socket
+import { addClient, removeClient, broadcastMessage } from '../services/websocket.service.js';
 
 export default async function chatSocket(fastify) {
-  fastify.addHook('preHandler', verifyJWT);
   fastify.get('/ws', { websocket: true }, async (connection, req) => {
+
     try {
       const token = req.headers['sec-websocket-protocol'];      
       if (!token) {
         console.error('No token provided in WebSocket URL');
-        connection.socket.close();
+        connection.close();
         return;
       }
       let user;
@@ -20,12 +18,12 @@ export default async function chatSocket(fastify) {
         user = fastify.jwt.verify(token);
       } catch (err) {
         console.error('Invalid JWT token:', err.message);
-        connection.socket.close();
+        connection.close();
         return;
       }
       const userId = user.userId;
-      console.log(`User ${userId} connected to WebSocket`);
-      clients.set(userId, connection.socket);
+      console.log(`🔌 User ${userId} connected to WebSocket`);
+      addClient(userId, connection);
       try {
         const unreadMessages = await prisma.message.findMany({
           where: {
@@ -69,25 +67,7 @@ export default async function chatSocket(fastify) {
             return;
           }
           const newMessage = await sendMessageService(parseInt(userId), parseInt(receiverId), content);
-          const receiverSocket = clients.get(parseInt(receiverId));
-          if (receiverSocket && receiverSocket.readyState === 1) {
-            receiverSocket.send(JSON.stringify({
-              from: userId,
-              content,
-              createdAt: newMessage.createdAt,
-              isRead: true
-            }));
-            console.log(`Message sent to user ${receiverId}`);
-          } else {
-            console.log(`User ${receiverId} is not online`);
-
-          }
-          connection.send(JSON.stringify({
-            to: receiverId,
-            content,
-            createdAt: newMessage.createdAt,
-            status: 'sent'
-          }));
+          broadcastMessage(parseInt(userId), parseInt(receiverId), content, newMessage.createdAt);
 
         } catch (err) {
           console.error('Error processing message:', err);
@@ -97,17 +77,17 @@ export default async function chatSocket(fastify) {
         }
       });
       connection.on('close', () => {
-        clients.delete(userId);
+        removeClient(userId);
         console.log(`User ${userId} disconnected`);
       });
       connection.on('error', (err) => {
         console.error(`WebSocket error for user ${userId}:`, err);
-        clients.delete(userId);
+        removeClient(userId);
       });
 
     } catch (err) {
       console.error('Error in WebSocket connection:', err);
-      connection.socket.close();
+      connection.close();
     }
   });
 }
