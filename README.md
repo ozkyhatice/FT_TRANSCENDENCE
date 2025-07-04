@@ -1,152 +1,138 @@
+# ft_transcendence - Pong Game Backend
 
+A backend API for the transcendence pong game project, built with Node.js and Fastify.
 
+## What's included
 
-# Pong Game API — ft_transcendence Backend
+- User registration and authentication system
+- JWT-based auth with protected routes
+- User profiles and friend management
+- Real-time chat functionality
+- Channel/room system for group conversations
+- SQLite database with Prisma ORM
 
-## 🎯 Project Overview
+## Tech stack
 
-This is the backend system for the **ft_transcendence** Pong Game platform.  
-It includes core features such as:
+- **Node.js** with Fastify framework
+- **SQLite** database via Prisma ORM
+- **JWT** for authentication
+- **WebSockets** for real-time features
+- **bcrypt** for password hashing
 
-- ✅ User Authentication (JWT-based)
-- ✅ User Profile Management
-- ✅ Friend System (add, view, respond)
-- ✅ Protected Routes with JWT
-- ✅ Swagger Documentation for API Testing
+## Getting started
 
----
+### Prerequisites
 
-## 🚀 Technologies Used
+Make sure you have Node.js installed (v14+ recommended).
 
-| Tech          | Purpose                           |
-|---------------|-----------------------------------|
-| Node.js       | Server runtime                    |
-| Fastify       | Lightweight web framework         |
-| SQLite        | Lightweight relational database   |
-| Prisma ORM    | Type-safe database operations     |
-| JWT           | Authentication                    |
-| Bcrypt        | Password hashing                  |
-| Swagger       | API Documentation & Testing       |
+### Installation
 
----
-
-## 📦 Setup Instructions
-
-### 1. Clone the Repository
-
+1. Clone the repo and navigate to backend:
 ```bash
-git clone https://github.com/cantasar/pong-game-api.git
-cd pong-game-api/backend
+git clone <repository-url>
+cd trans/backend
 ```
 
-### 2. Install Dependencies
-
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-### 3. Configure Environment Variables
-
-Create a `.env` file:
-
+3. Set up environment variables by creating a `.env` file:
 ```env
 PORT=3000
-JWT_SECRET=your_super_secret
+JWT_SECRET=your_jwt_secret_key_here
 DATABASE_URL="file:./prisma/dev.db"
 ```
 
-### 4. Setup Database
-
+4. Initialize the database:
 ```bash
-npx prisma migrate dev --name init
+npx prisma migrate dev
 npx prisma generate
 ```
 
-### 5. Start the Server
-
+5. Start the development server:
 ```bash
 npm run dev
 ```
 
-➡️ Server runs at: `http://localhost:3000`
+The API will be available at `http://localhost:3000`
 
----
+## API Documentation
 
-## 📚 Swagger API Documentation
+Once the server is running, you can view the interactive API docs at:
+`http://localhost:3000/docs`
 
-Visit the live documentation at:  
-➡️ `http://localhost:3000/docs`
+### Authentication
 
-### 🔑 Authorize with JWT:
+Most endpoints require authentication. After logging in, include the JWT token in your requests:
 
-1. Register or login to get a token.
-2. Click **Authorize** (top-right in Swagger UI)
-3. Enter:
-   ```
-   Bearer <your_token>
-   ```
-
----
-
-## 🔐 Features Overview
-
-### ✅ Authentication
-
-- `POST /register` – Create new user  
-- `POST /login` – Authenticate and receive JWT
-
-### ✅ Authenticated User
-
-- `GET /me` – Get current user info  
-- `POST /me` – Update user info (username, password)
-
-### 🧑‍🤝‍🧑 Friend System
-
-- `POST /friends/:targetId` – Send friend request  
-- `GET /friends` – Get all accepted friends  
-- `GET /friends/requests` – View incoming pending requests  
-- `PATCH /friends/:id` – Accept or reject a friend request  
-  - Body: `{ "action": "accept" }` or `{ "action": "reject" }`
-
----
-
-## 📬 Example Usage (with curl)
-
-### 🔐 Register
-
-```bash
-curl -X POST http://localhost:3000/register \
-  -H "Content-Type: application/json" \
-  -d '{"username": "can", "password": "123456"}'
+```
+Authorization: Bearer <your-token>
 ```
 
-### 🔐 Login
+## Main features
 
-```bash
-curl -X POST http://localhost:3000/login \
-  -H "Content-Type: application/json" \
-  -d '{"username": "can", "password": "123456"}'
+### User Management
+- Register new users
+- Login with username/password
+- Update user profiles
+- Manage user settings
+
+### Friends System
+- Send friend requests
+- Accept/reject incoming requests
+- View friend lists
+- Remove friends
+
+### Chat & Channels
+- Create and join channels
+- Send messages in real-time
+- Private messaging between users
+- Channel membership management
+
+### Real-time Features
+- WebSocket connections for live chat
+- Real-time friend status updates
+- Live notifications
+
+## Project structure
+
+```
+src/
+├── auth/           # Authentication utilities
+├── controllers/    # Route handlers
+├── middlewares/    # Custom middleware
+├── routes/         # API route definitions
+├── services/       # Business logic
+├── schemas/        # Validation schemas
+└── sockets/        # WebSocket handlers
 ```
 
-### 🧾 Get Profile
+## Database
 
-```bash
-curl -X GET http://localhost:3000/me \
-  -H "Authorization: Bearer <your_token>"
-```
+The project uses SQLite with Prisma ORM. Database schema includes:
 
-### 🧑‍🤝‍🧑 Send Friend Request
+- Users with authentication
+- Friend relationships
+- Channels and memberships
+- Messages and chat history
 
-```bash
-curl -X POST http://localhost:3000/friends/2 \
-  -H "Authorization: Bearer <your_token>"
-```
+## Development
 
----
+To work on this project:
 
-## ✅ Next Steps (Planned)
+1. Make sure the database is set up and migrations are current
+2. Use `npm run dev` for development with auto-reload
+3. Check the Swagger docs for API testing
+4. WebSocket testing can be done via the frontend or tools like wscat
 
-- 🎮 Game Session & Match History
-- 💬 Real-time Chat (Socket.io)
-- 🌐 Google OAuth Login
-- 🔐 2FA with TOTP
+## Notes
+
+This is part of the larger ft_transcendence project. The frontend is located in the `/frontend` directory and includes HTML/JS files for testing the API endpoints.
+
+For production deployment, make sure to:
+- Set proper JWT secrets
+- Configure appropriate CORS settings
+- Set up proper logging
+- Consider using a more robust database like PostgreSQL
