@@ -1,7 +1,7 @@
 import prisma from '../db/client.js';
 import { isFriendService } from '../services/isFriend.service.js';
 import { sendMessageService } from '../services/chat.service.js';
-import { addClient, removeClient, broadcastMessage } from '../services/websocket.service.js';
+import { addClient, removeClient, broadcastMessage, isUserOnline, broadcastUserList } from '../services/websocket.service.js';
 
 export default async function chatSocket(fastify) {
   fastify.get('/ws', { websocket: true }, async (connection, req) => {
@@ -24,6 +24,11 @@ export default async function chatSocket(fastify) {
       const userId = user.userId;
       console.log(`🔌 User ${userId} connected to WebSocket`);
       addClient(userId, connection);
+
+      // Send current user list to the newly connected user
+      setTimeout(() => {
+        broadcastUserList();
+      }, 100); // Small delay to ensure connection is established
       try {
         const unreadMessages = await prisma.message.findMany({
           where: {
@@ -56,21 +61,39 @@ export default async function chatSocket(fastify) {
       connection.on('message', async messageRaw => {
         try {
           const { receiverId, content } = JSON.parse(messageRaw.toString());
+          console.log(`📨 Message received from user ${userId} to user ${receiverId}: "${content}"`);
+          
           const friend = await isFriendService(parseInt(userId), parseInt(receiverId));
-          console.log('\n\nfriend', friend, '\n\n');
+          console.log(`🤝 Friend check result:`, friend);
+          
           if (!friend) {
-            console.error('User is not a friend');
+            console.error('❌ User is not a friend');
+            connection.send(JSON.stringify({
+              error: 'User is not a friend'
+            }));
             return;
           }
+          
           if (!receiverId || !content) {
-            console.error('Invalid message format');
+            console.error('❌ Invalid message format');
+            connection.send(JSON.stringify({
+              error: 'Invalid message format'
+            }));
             return;
           }
+          
           const newMessage = await sendMessageService(parseInt(userId), parseInt(receiverId), content);
+          console.log(`💾 Message saved to database:`, newMessage);
+          
+          // Check if receiver is online before broadcasting
+          const isReceiverOnline = isUserOnline(parseInt(receiverId));
+          console.log(`🌐 Receiver ${receiverId} online status: ${isReceiverOnline}`);
+          
           broadcastMessage(parseInt(userId), parseInt(receiverId), content, newMessage.createdAt);
+          console.log(`📡 Message broadcasted to users`);
 
         } catch (err) {
-          console.error('Error processing message:', err);
+          console.error('❌ Error processing message:', err);
           connection.send(JSON.stringify({
             error: 'Failed to send message'
           }));

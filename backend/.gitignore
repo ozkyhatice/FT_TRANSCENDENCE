@@ -24,6 +24,7 @@ prisma/dev.db
 prisma/dev.db-journal
 .prisma/
 *.sqlite
+*.db
 
 # Fastify autoload
 build/
