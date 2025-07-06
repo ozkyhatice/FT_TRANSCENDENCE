@@ -5,5 +5,5 @@ export * from './messages-api';
 
 // Re-export specific functions for backward compatibility
 export { getToken, setToken, clearToken, loginApi, registerApi, getMe, apiFetch } from './auth-api';
-export { getFriends, sendFriendRequest, getFriendRequests, acceptOrRejectFriendRequest, getUserByUsername, getUserById } from './friends-api';
+export { getFriends, sendFriendRequest, getFriendRequests, acceptOrRejectFriendRequest, deleteFriendRequest, getUserByUsername, getUserById } from './friends-api';
 export { sendMessage, getMessages } from './messages-api';

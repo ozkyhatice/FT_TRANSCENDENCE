@@ -10,6 +10,7 @@ export interface Friend {
   id: number;
   username: string;
   status: 'online' | 'offline' | 'away';
+  friendshipId: number;
 }
 
 // Friend request types

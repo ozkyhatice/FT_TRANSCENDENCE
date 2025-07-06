@@ -1,5 +1,6 @@
 import { PrismaClientUnknownRequestError } from '@prisma/client/runtime/library';
 import prisma from '../db/client.js';
+import * as   friendService from '../services/friend.service.js';
 
 export async function createFriendRequestController(request, reply) {
   try{
@@ -65,7 +66,8 @@ export async function getFriendsController(request, reply){
   });
 
   const friendsList = friends.map(friend => {
-      return friend.requesterId === userId ? friend.receiver : friend.requester;
+      const friendUser = friend.requesterId === userId ? friend.receiver : friend.requester;
+      return { ...friendUser, friendshipId: friend.id };
   })
 
   return reply.code(200).send({ friendsList });
@@ -101,9 +103,9 @@ export async function respondToFriendRequestController(request, reply) {
     return reply.code(400).send({ error: 'Invalid action. Must be accept or reject.' });
   }
 
-  const friendRequest = await prisma.friend.findUnique({
-    where: { id: friendRequestId }
-  });
+    const friendRequest = await prisma.friend.findUnique({
+      where: { id: friendRequestId }
+    });
 
   if (!friendRequest || friendRequest.receiverId !== userId) {
     return reply.code(404).send({ error: 'Friend request not found or not authorized' });
@@ -115,4 +117,14 @@ export async function respondToFriendRequestController(request, reply) {
   });
 
   return reply.send({ message: `Friend request ${action}ed`, friendRequest: updated });
+}
+
+export async function deleteFriendRequestController(request, reply) {
+  const friendshipId = parseInt(request.params.id, 10);
+  try{
+    const friendRequest = await friendService.deleteFriendRequestService(friendshipId, request.user.userId);
+    return reply.code(200).send({ message: 'Friend request deleted', friendRequest });
+  }catch(error){
+    return reply.code(400).send({ error: error.message });
+  }
 }

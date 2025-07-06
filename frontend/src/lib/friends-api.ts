@@ -74,3 +74,9 @@ export async function getUserById(userId: number) {
     throw error;
   }
 }
+
+export async function deleteFriendRequest(id: number) {
+  return apiFetch(`/friends/${id}`, {
+    method: 'DELETE'
+  });
+}

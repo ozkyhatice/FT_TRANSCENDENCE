@@ -1,6 +1,6 @@
 import * as friendsController from '../controllers/friends.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
-import { createFriendRequestSchema, getFriendsSchema, getPendingFriendRequestsSchema, respondToFriendRequestSchema } from '../schemas/friendsSchemas.js';
+import { createFriendRequestSchema, getFriendsSchema, getPendingFriendRequestsSchema, respondToFriendRequestSchema, deleteFriendRequestSchema	 } from '../schemas/friendsSchemas.js';
 
 export default async function friendsRoutes(app) {
 
@@ -26,6 +26,11 @@ export default async function friendsRoutes(app) {
 		preHandler: [verifyJWT],
 		schema: respondToFriendRequestSchema,
 		handler: friendsController.respondToFriendRequestController
+	});
+	app.delete('/friends/:id', {
+		preHandler: [verifyJWT],
+		schema: deleteFriendRequestSchema,
+		handler: friendsController.deleteFriendRequestController
 	});
 
 }

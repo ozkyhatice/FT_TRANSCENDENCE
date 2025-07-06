@@ -142,10 +142,17 @@ export function ProfileCard(
             <div class="font-medium text-slate-700 text-sm truncate">${friend.username}</div>
             <div class="text-xs text-slate-400 status-text-${friend.id}"></div>
           </div>
-          <div class="text-slate-300 group-hover:text-slate-400 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-            </svg>
+          <div class="flex items-center gap-2">
+            <button class="remove-friend-btn text-rose-300 hover:text-rose-500 transition-colors" title="Remove friend" data-friendship-id="${friend.friendshipId}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            <span class="text-slate-300 group-hover:text-slate-400 transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </span>
           </div>
         </div>
       `).join('');
@@ -166,13 +173,33 @@ export function ProfileCard(
         }
       });
 
-      // Add click listeners
+      // Add click listeners to open chat
       friendsContent.querySelectorAll('[data-friend-id]').forEach(element => {
         element.addEventListener('click', () => {
           const friendId = element.getAttribute('data-friend-id');
           const friend = friends.find((f: any) => f.id.toString() === friendId);
           if (friend && onFriendSelect) {
             onFriendSelect(friend);
+          }
+        });
+      });
+
+      // Remove friend buttons
+      friendsContent.querySelectorAll('.remove-friend-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation(); // Prevent triggering parent click (chat open)
+          const friendshipId = (btn as HTMLElement).getAttribute('data-friendship-id');
+          if (!friendshipId) return;
+          if (!confirm('Are you sure you want to remove this friend?')) return;
+
+          try {
+            const { deleteFriendRequest } = await import('../../lib/api');
+            await deleteFriendRequest(parseInt(friendshipId));
+            // Reload friends list
+            loadFriends();
+          } catch (error) {
+            console.error('Error removing friend:', error);
+            alert('Failed to remove friend');
           }
         });
       });

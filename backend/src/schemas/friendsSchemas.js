@@ -46,4 +46,18 @@ const respondToFriendRequestSchema = {
         required: ['action']
     }
 }
-export { createFriendRequestSchema, getFriendsSchema, getPendingFriendRequestsSchema, respondToFriendRequestSchema };
+
+const deleteFriendRequestSchema = {
+    summary: 'Delete a friend request',
+    tags: ['Friends'],
+    security: [{ bearerAuth: [] }],
+    params: {
+        type: 'object',
+        properties: {
+            id: { type: 'string', description: 'Friend request ID' }
+        },
+        required: ['id']
+    }
+}
+
+export { createFriendRequestSchema, getFriendsSchema, getPendingFriendRequestsSchema, respondToFriendRequestSchema, deleteFriendRequestSchema };
